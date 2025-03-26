@@ -1,6 +1,6 @@
 document.getElementById('logout').addEventListener('click', () => {
     localStorage.removeItem("jwt");
-    window.location.href = "login.html";
+    window.location.href = "index.html";
 });
 
 async function fetchUserData() {
