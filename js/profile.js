@@ -87,16 +87,16 @@ fetchUserData();
 
 function formatData(data) {
     let newData = {};
-    newData.login = data.user[0].login;
-    newData.firstName = data.user[0].firstName;
-    newData.lastName = data.user[0].lastName;
-    newData.auditRatio = data.user[0].auditRatio;
-    newData.totalDown = data.user[0].totalDown;
-    newData.totalUp = data.user[0].totalUp;
-    newData.totalUpBonus = data.user[0].totalUpBonus;
-    newData.totalXp = data.user[0].totalXp.aggregate.sum.amount;
-    newData.level = data.user[0].transactions[0].amount;
-
+    newData.login = data.user[0].login ? data.user[0].login : "Unkonwn user";
+    newData.firstName = data.user[0].firstName ? data.user[0].firstName : "Unkonwn";
+    newData.lastName = data.user[0].lastName ? data.user[0].lastName : "Unkonwn";
+    newData.auditRatio = data.user[0].auditRatio ? data.user[0].auditRatio : 0;
+    newData.totalDown = data.user[0].totalDown ? data.user[0].totalDown : 0;
+    newData.totalUp = data.user[0].totalUp ? data.user[0].totalUp : 0;
+    newData.totalUpBonus = data.user[0].totalUpBonus ? data.user[0].totalUpBonus : 0;
+    newData.totalXp = data.user[0].totalXp.aggregate.sum.amount ? data.user[0].totalXp.aggregate.sum.amount : 0;
+    newData.level = data.user[0].transactions[0] ? data.user[0].transactions[0].amount : 0;
+    let isData = false;
     data.user[0].skills.forEach(skill => {
         if (skill.type === "skill_prog" && !newData.skillProg) {
             newData.skillProg = skill.amount;
@@ -114,9 +114,19 @@ function formatData(data) {
             newData.skillFrontend = skill.amount;
         }
         if (skill.type === "skill_go" && !newData.skillGo) {
+            isData = true;
             newData.skillGo = skill.amount;
         }
     });
+
+    if (!isData) {
+        newData.skillGo = 0;
+        newData.skillSql = 0;
+        newData.skillFrontend = 0;
+        newData.skillBackend = 0;
+        newData.skillAlgo = 0;
+        newData.skillProg = 0;
+    }
 
     return newData;
 }
@@ -132,8 +142,6 @@ function formatSize(value) {
 }
 
 function renderProfile(data) {
-    console.log(data);
-
     document.getElementById('userName').innerText = data.login;
 
     document.getElementById('container').innerHTML = `
@@ -143,30 +151,18 @@ function renderProfile(data) {
         <h1>Total xp: ${formatSize(data.totalXp)}</h1>
     </div>
 
-    <svg width="200" height="230" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
-        <style>
-            .title { font: bold 18px sans-serif; fill: #FFF; text-anchor: middle; }
-            .section { font: 14px sans-serif; fill: #AAA; text-anchor: middle; }
-            .highlight { font: bold 14px sans-serif; fill: #FFF; text-anchor: middle; }
-            .bonus { fill: #FFC107; font: 12px sans-serif; text-anchor: middle; }
-            .received { fill: #BBB; font: 12px sans-serif; text-anchor: middle; }
-        </style>
-        
-        <text x="100" y="20" class="title">Audits ratio: ${(data.auditRatio).toFixed(1)}</text>
-        
-        <circle cx="100" cy="120" r="85" fill="transparent" />
-        
-        <circle cx="100" cy="120" r="80" fill="none" stroke="#75c778" stroke-width="12" stroke-dasharray="${(data.totalUp / (data.totalUp + data.totalDown + data.totalUpBonus) * 502).toFixed(1)}, 502" transform="rotate(-90 100 120)" />
-        <circle cx="100" cy="120" r="80" fill="none" stroke="#FFC107" stroke-width="12" stroke-dasharray="${(data.totalUpBonus / (data.totalUp + data.totalDown + data.totalUpBonus) * 502).toFixed(1)}, 502" transform="rotate(${(data.totalUp / (data.totalUp + data.totalDown + data.totalUpBonus) * 360 - 90).toFixed(1)} 100 120)" />
-        <circle cx="100" cy="120" r="80" fill="none" stroke="#ffbab5" stroke-width="12" stroke-dasharray="${(data.totalDown / (data.totalUp + data.totalDown + data.totalUpBonus) * 502).toFixed(1)}, 502" transform="rotate(${((data.totalUp + data.totalUpBonus) / (data.totalUp + data.totalDown + data.totalUpBonus) * 360 - 90).toFixed(1)} 100 120)" />
-        
-        <text x="100" y="95" class="section" stroke="#75c778">Done</text>
-        <text x="100" y="110" class="highlight">${(data.totalUp / 1000000).toFixed(2)} MB</text>
-        <text x="100" y="125" class="bonus">+ ${(data.totalUpBonus / 1000).toFixed(2)} kB ↑</text>
-        
-        <text x="100" y="145" class="section" stroke="#ffbab5">Received</text>
-        <text x="100" y="160" class="highlight">${(data.totalDown / 1000000).toFixed(2)} MB</text>
-        <text x="100" y="175" class="received">↓</text>
+    <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+        <text x="100" y="30" class="title">Audits ratio: ${(data.auditRatio).toFixed(1)}</text>
+
+        <text x="60" y="50" class="section" stroke="#75c778">Done</text>
+        <text x="110" y="50" class="highlight"> ${(data.totalUp / 1000000).toFixed(2)} MB</text>
+        <rect x="30" y="60" width="${data.totalUp / 5000}" height="10" fill="#75c778" />
+        <text x="200" y="50" class="bonus">+ ${(data.totalUpBonus / 1000).toFixed(2)} kB ↑ </text>
+
+        <text x="60" y="100" class="section" stroke="#f7a4a4">Received</text>
+        <text x="120" y="100" class="highlight"> ${(data.totalDown / 1000000).toFixed(2)} MB</text>
+        <rect x="30" y="110" width="${data.totalDown / 5000}" height="10" fill="#f7a4a4" />
+
     </svg>
     
     <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
