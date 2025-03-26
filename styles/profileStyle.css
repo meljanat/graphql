@@ -66,3 +66,27 @@ svg {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin: 20px;
 }
+
+svg .title {
+    font: bold 18px sans-serif;
+    fill: #FFF;
+    text-anchor: middle;
+}
+
+svg .section {
+    font: 14px sans-serif;
+    fill: #AAA;
+    text-anchor: middle;
+}
+
+svg .highlight {
+    font: bold 14px sans-serif;
+    fill: #FFF;
+    text-anchor: middle;
+}
+
+svg .bonus {
+    fill: #FFC107;
+    font: 12px sans-serif;
+    text-anchor: middle;
+}
