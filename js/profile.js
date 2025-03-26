@@ -151,7 +151,7 @@ function renderProfile(data) {
         <h1>Total xp: ${formatSize(data.totalXp)}</h1>
     </div>
 
-    <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+    <svg width="400" height="150" xmlns="http://www.w3.org/2000/svg">
         <text x="100" y="30" class="title">Audits ratio: ${(data.auditRatio).toFixed(1)}</text>
 
         <text x="60" y="50" class="section" stroke="#75c778">Done</text>
