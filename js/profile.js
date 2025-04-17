@@ -1,6 +1,6 @@
 document.getElementById('logout').addEventListener('click', () => {
     localStorage.removeItem("jwt");
-    window.location.href = "login.html";
+    window.location.href = "index.html";
 });
 
 async function fetchUserData() {
@@ -79,7 +79,7 @@ async function fetchUserData() {
 
     if (data.errors) {
         localStorage.removeItem("jwt");
-        window.location.href = "login.html";
+        window.location.href = "index.html";
     } else {
         renderProfile(formatData(data.data));
     }
