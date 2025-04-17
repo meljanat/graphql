@@ -15,7 +15,6 @@ document.getElementById('Login').addEventListener('submit', (event) => {
     login(userVal, passwordVal);
 });
 
-
 async function login(username, password) {
     const credentials = btoa(`${username}:${password}`);
     const response = await fetch("https://learn.zone01oujda.ma/api/auth/signin", {
@@ -34,4 +33,3 @@ async function login(username, password) {
         alert(data.error)
     }
 }
-

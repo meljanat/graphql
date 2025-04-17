@@ -1,6 +1,6 @@
 document.getElementById('logout').addEventListener('click', () => {
     localStorage.removeItem("jwt");
-    window.location.href = "index.html";
+    window.location.href = "login.html";
 });
 
 async function fetchUserData() {
@@ -55,7 +55,8 @@ async function fetchUserData() {
             {type :{_eq :"xp"}}
             {event:{object:{name:{_eq:"Module"}}}}
         ]}
-            order_by :{createdAt :asc}
+            limit :1
+            order_by :{createdAt :desc}
         ){
             amount
             object{
@@ -96,7 +97,15 @@ function formatData(data) {
     newData.totalUpBonus = data.user[0].totalUpBonus ? data.user[0].totalUpBonus : 0;
     newData.totalXp = data.user[0].totalXp.aggregate.sum.amount ? data.user[0].totalXp.aggregate.sum.amount : 0;
     newData.level = data.user[0].transactions[0] ? data.user[0].transactions[0].amount : 0;
-    let isData = false;
+    newData.lastProject = data.transaction[0] ? data.transaction[0].object.name : "None";
+    newData.lastprjxp = data.transaction[0] ? data.transaction[0].amount : 0;
+    newData.skillGo = 0;
+    newData.skillSql = 0;
+    newData.skillFrontend = 0;
+    newData.skillBackend = 0;
+    newData.skillAlgo = 0;
+    newData.skillProg = 0;
+
     data.user[0].skills.forEach(skill => {
         if (skill.type === "skill_prog" && !newData.skillProg) {
             newData.skillProg = skill.amount;
@@ -114,19 +123,9 @@ function formatData(data) {
             newData.skillFrontend = skill.amount;
         }
         if (skill.type === "skill_go" && !newData.skillGo) {
-            isData = true;
             newData.skillGo = skill.amount;
         }
     });
-
-    if (!isData) {
-        newData.skillGo = 0;
-        newData.skillSql = 0;
-        newData.skillFrontend = 0;
-        newData.skillBackend = 0;
-        newData.skillAlgo = 0;
-        newData.skillProg = 0;
-    }
 
     return newData;
 }
@@ -149,6 +148,7 @@ function renderProfile(data) {
         <h1>Welcome, ${data.firstName} ${data.lastName}!</h1>
         <h2>Level: ${data.level}</h2>
         <h1>Total xp: ${formatSize(data.totalXp)}</h1>
+        <h1>Last project: ${data.lastProject} (${data.lastprjxp} xp)</h1>
     </div>
 
     <svg width="400" height="150" xmlns="http://www.w3.org/2000/svg">
