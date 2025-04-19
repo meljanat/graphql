@@ -143,25 +143,37 @@ function formatSize(value) {
 function renderProfile(data) {
     document.getElementById('userName').innerText = data.login;
 
+    let [upWidth, downWidth] = makeWidth(data.totalUp, data.totalDown);
+    let totUp = data.totalUp > 1000000 ? (data.totalUp / 1000000).toFixed(2) + ' MB' : (data.totalUp / 1000).toFixed(2) + ' KB';
+    let totUpBonus = data.totalUpBonus > 1000000 ? (data.totalUpBonus / 1000000).toFixed(2) + ' MB' : (data.totalUpBonus / 1000).toFixed(2) + ' KB';
+    let totDown = data.totalDown > 1000000 ? (data.totalDown / 1000000).toFixed(2) + ' MB' : (data.totalDown / 1000).toFixed(2) + ' KB';
+    let lastprjxp = data.lastprjxp > 1000000 ? (data.lastprjxp / 1000000).toFixed(2) + 'MB' : (data.lastprjxp / 1000).toFixed(2) + 'KB';
+
     document.getElementById('container').innerHTML = `
     <div class="user-info">
         <h1>Welcome, ${data.firstName} ${data.lastName}!</h1>
+    </div>
+    <br>
+    <div class="user-info">
         <h2>Level: ${data.level}</h2>
         <h1>Total xp: ${formatSize(data.totalXp)}</h1>
-        <h1>Last project: ${data.lastProject} (${data.lastprjxp} xp)</h1>
     </div>
-
+    <br>
+    <div class="user-info">
+        <h1>Last project: ${data.lastProject} (${lastprjxp} xp)</h1>
+    </div>
+    <br>
     <svg width="400" height="150" xmlns="http://www.w3.org/2000/svg">
         <text x="100" y="30" class="title">Audits ratio: ${(data.auditRatio).toFixed(1)}</text>
 
         <text x="60" y="50" class="section" stroke="#75c778">Done</text>
-        <text x="110" y="50" class="highlight"> ${(data.totalUp / 1000000).toFixed(2)} MB</text>
-        <rect x="30" y="60" width="${data.totalUp / 5000}" height="10" fill="#75c778" />
-        <text x="200" y="50" class="bonus">+ ${(data.totalUpBonus / 1000).toFixed(2)} kB ↑ </text>
+        <text x="110" y="50" class="highlight"> ${totUp}</text>
+        <rect x="30" y="60" width="${upWidth}" height="10" fill="#75c778" />
+        <text x="200" y="50" class="bonus">+ ${totUpBonus} ↑ </text>
 
         <text x="60" y="100" class="section" stroke="#f7a4a4">Received</text>
-        <text x="120" y="100" class="highlight"> ${(data.totalDown / 1000000).toFixed(2)} MB</text>
-        <rect x="30" y="110" width="${data.totalDown / 5000}" height="10" fill="#f7a4a4" />
+        <text x="120" y="100" class="highlight"> ${totDown}</text>
+        <rect x="30" y="110" width="${downWidth}" height="10" fill="#f7a4a4" />
 
     </svg>
     
@@ -176,21 +188,28 @@ function renderProfile(data) {
         <line x1="40" y1="250" x2="350" y2="250" stroke="#888"/>
         
         <rect x="50" y="${makeHeight(data.skillProg)[0]}" width="40" height="${makeHeight(data.skillProg)[1]}" fill="#fdefef" />
-        <text x="70" y="245" class="section">Prog</text>
+        <text x="70" y="270" class="section">Prog</text>
         <rect x="100" y="${makeHeight(data.skillAlgo)[0]}" width="40" height="${makeHeight(data.skillAlgo)[1]}" fill="#fdefef" />
-        <text x="120" y="245" class="section">Algo</text>
+        <text x="120" y="270" class="section">Algo</text>
         <rect x="150" y="${makeHeight(data.skillBackend)[0]}" width="40" height="${makeHeight(data.skillBackend)[1]}" fill="#fdefef" />
-        <text x="170" y="245" class="section">Back</text>
+        <text x="170" y="270" class="section">Back</text>
         <rect x="200" y="${makeHeight(data.skillFrontend)[0]}" width="40" height="${makeHeight(data.skillFrontend)[1]}" fill="#fdefef" />
-        <text x="220" y="245" class="section">Front</text>
+        <text x="220" y="270" class="section">Front</text>
         <rect x="250" y="${makeHeight(data.skillGo)[0]}" width="40" height="${makeHeight(data.skillGo)[1]}" fill="#fdefef" />
-        <text x="270" y="245" class="section">Go</text>
+        <text x="270" y="270" class="section">Go</text>
         <rect x="300" y="${makeHeight(data.skillSql)[0]}" width="40" height="${makeHeight(data.skillSql)[1]}" fill="#fdefef" />
-        <text x="320" y="245" class="section">SQL</text>
+        <text x="320" y="270" class="section">SQL</text>
     </svg>
     `;
 }
 
 function makeHeight(value) {
     return [250 - (value * 2), value * 2];
+}
+
+function makeWidth(totalUp, totalDown) {
+    let max = Math.max(totalUp, totalDown);
+    let upWidth = (totalUp / max) * 340;
+    let downWidth = (totalDown / max) * 340;
+    return [upWidth, downWidth];
 }
